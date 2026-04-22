@@ -3,13 +3,11 @@ import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
 
-const LEAGUE_ID = 1
-
 export default function Profile() {
   const { user, fetchProfile } = useAuth()
   const navigate = useNavigate()
   const [profile, setProfile] = useState(null)
-  const [membership, setMembership] = useState(null)
+  const [memberships, setMemberships] = useState([])
   const [matches, setMatches] = useState([])
   const [challenges, setChallenges] = useState([])
   const [scoreForm, setScoreForm] = useState(null)
@@ -31,21 +29,23 @@ export default function Profile() {
     setProfile(profileData)
 
     const [memberRes, matchRes, challengeRes] = await Promise.all([
-      supabase.from('league_members').select('*').eq('league_id', LEAGUE_ID).eq('user_id', user.id).single(),
+      supabase.from('league_members')
+        .select('*, leagues(name, region)')
+        .eq('user_id', user.id),
       supabase.from('matches')
-        .select('*, winner:profiles!matches_winner_id_fkey(full_name), loser:profiles!matches_loser_id_fkey(full_name)')
+        .select('*, winner:profiles!matches_winner_id_fkey(full_name), loser:profiles!matches_loser_id_fkey(full_name), leagues(name)')
         .or(`winner_id.eq.${user.id},loser_id.eq.${user.id}`)
         .in('status', ['confirmed', 'disputed'])
         .order('created_at', { ascending: false })
-        .limit(10),
+        .limit(20),
       supabase.from('challenges')
-        .select('*, challenger:profiles!challenges_challenger_id_fkey(full_name, username), opponent:profiles!challenges_opponent_id_fkey(full_name, username)')
+        .select('*, league_id, challenger:profiles!challenges_challenger_id_fkey(full_name, username), opponent:profiles!challenges_opponent_id_fkey(full_name, username)')
         .or(`challenger_id.eq.${user.id},opponent_id.eq.${user.id}`)
         .in('status', ['pending', 'accepted'])
         .order('created_at', { ascending: false }),
     ])
 
-    setMembership(memberRes.data)
+    setMemberships(memberRes.data || [])
     setMatches(matchRes.data || [])
     setChallenges(challengeRes.data || [])
     setLoading(false)
@@ -70,7 +70,7 @@ export default function Profile() {
     const loserId = scoreForm.challenger_id === user.id ? scoreForm.opponent_id : scoreForm.challenger_id
 
     const { error } = await supabase.from('matches').insert({
-      league_id: LEAGUE_ID,
+      league_id: scoreForm.league_id,
       challenge_id: scoreForm.id,
       winner_id: winnerId,
       loser_id: loserId,
@@ -87,15 +87,9 @@ export default function Profile() {
     }
   }
 
-  async function confirmMatch(matchId, matchData) {
+  async function confirmMatch(matchId) {
     const { error } = await supabase.from('matches').update({ status: 'confirmed', confirmed_by: user.id }).eq('id', matchId)
-    if (!error) {
-      // Update winner's stats
-      await supabase.from('league_members')
-        .update({ wins: supabase.rpc('increment_wins', { uid: matchData.winner_id }) })
-        .eq('user_id', matchData.winner_id).eq('league_id', LEAGUE_ID)
-      setMessage('Match confirmed!'); fetchData()
-    }
+    if (!error) { setMessage('Match confirmed!'); fetchData() }
   }
 
   async function saveName() {
@@ -109,9 +103,6 @@ export default function Profile() {
   }
 
   if (loading) return <div className="flex items-center justify-center min-h-screen text-gray-400 text-sm">Loading…</div>
-
-  const totalGames = (membership?.wins || 0) + (membership?.losses || 0)
-  const winPct = totalGames === 0 ? '—' : `${Math.round(((membership.wins) / totalGames) * 100)}%`
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-8 space-y-6">
@@ -149,19 +140,34 @@ export default function Profile() {
           </div>
         </div>
 
-        {/* Stats */}
-        <div className="grid grid-cols-3 gap-4 mt-6">
-          {[
-            { label: 'Rank', value: membership ? `#${membership.rank}` : '—' },
-            { label: 'Record', value: membership ? `${membership.wins}W / ${membership.losses}L` : '—' },
-            { label: 'Win rate', value: winPct },
-          ].map(s => (
-            <div key={s.label} className="text-center bg-gray-50 rounded-xl py-3">
-              <p className="text-lg font-bold text-gray-900">{s.value}</p>
-              <p className="text-xs text-gray-400 mt-0.5">{s.label}</p>
-            </div>
-          ))}
-        </div>
+        {/* League memberships */}
+        {memberships.length === 0 ? (
+          <p className="text-sm text-gray-400 mt-5">Not a member of any leagues yet.</p>
+        ) : (
+          <div className="mt-5 space-y-3">
+            {memberships.map(m => {
+              const total = (m.wins || 0) + (m.losses || 0)
+              const winPct = total === 0 ? '—' : `${Math.round((m.wins / total) * 100)}%`
+              return (
+                <div key={m.league_id} className="bg-gray-50 rounded-xl p-3">
+                  <p className="text-xs font-semibold text-gray-500 mb-2">{m.leagues?.name} · {m.leagues?.region}</p>
+                  <div className="grid grid-cols-3 gap-3">
+                    {[
+                      { label: 'Rank', value: `#${m.rank}` },
+                      { label: 'Record', value: `${m.wins}W / ${m.losses}L` },
+                      { label: 'Win rate', value: winPct },
+                    ].map(s => (
+                      <div key={s.label} className="text-center bg-white rounded-lg py-2">
+                        <p className="text-base font-bold text-gray-900">{s.value}</p>
+                        <p className="text-xs text-gray-400">{s.label}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        )}
       </div>
 
       {/* Active challenges */}
@@ -238,7 +244,7 @@ export default function Profile() {
                     <p className="text-sm font-semibold text-gray-900">
                       vs {won ? m.loser?.full_name : m.winner?.full_name}
                     </p>
-                    <p className="text-xs text-gray-400">{m.score}{m.status === 'disputed' ? ' · Disputed — awaiting admin review' : ''}</p>
+                    <p className="text-xs text-gray-400">{m.score}{m.status === 'disputed' ? ' · Disputed — awaiting admin review' : ''}{m.leagues?.name ? ` · ${m.leagues.name}` : ''}</p>
                   </div>
                   <div className="flex items-center gap-2 flex-shrink-0">
                     {canDispute && (

@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext'
 import Navbar from './components/Navbar'
 import ProtectedRoute from './components/ProtectedRoute'
+import Leagues from './pages/Leagues'
 import Ladder from './pages/Ladder'
 import Login from './pages/Login'
 import Register from './pages/Register'
@@ -18,8 +19,10 @@ export default function App() {
     <AuthProvider>
       <BrowserRouter>
         <Navbar />
+        <div className="pb-20 sm:pb-0">
         <Routes>
-          <Route path="/" element={<Ladder />} />
+          <Route path="/" element={<Leagues />} />
+          <Route path="/leagues/:leagueId" element={<Ladder />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/profile" element={
@@ -31,6 +34,7 @@ export default function App() {
           <Route path="/messages/:challengeId" element={<ProtectedRoute><Chat /></ProtectedRoute>} />
           <Route path="/admin" element={<ProtectedRoute><Admin /></ProtectedRoute>} />
         </Routes>
+        </div>
       </BrowserRouter>
     </AuthProvider>
   )
