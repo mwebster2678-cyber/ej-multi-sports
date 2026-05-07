@@ -89,8 +89,9 @@ export default function Admin() {
   }
 
   async function overturn(match) {
-    await supabase.from('matches').delete().eq('id', match.id)
-    setMessage(`Result overturned and removed.`)
+    const { error } = await supabase.from('matches').delete().eq('id', match.id)
+    if (error) { setMessage(`Error: ${error.message}`); return }
+    setMessage(`Result overturned — stats and ranks have been reversed.`)
     fetchAll()
   }
 
