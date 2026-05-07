@@ -20,6 +20,14 @@ export default function Profile() {
   useEffect(() => {
     if (!user) { navigate('/login'); return }
     fetchData()
+
+    const sub = supabase
+      .channel('profile-challenges')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'challenges' }, fetchData)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'matches' }, fetchData)
+      .subscribe()
+
+    return () => supabase.removeChannel(sub)
   }, [user])
 
   async function fetchData() {
