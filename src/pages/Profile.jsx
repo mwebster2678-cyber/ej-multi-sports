@@ -35,7 +35,7 @@ export default function Profile() {
       supabase.from('matches')
         .select('*, winner:profiles!matches_winner_id_fkey(full_name), loser:profiles!matches_loser_id_fkey(full_name), leagues(name)')
         .or(`winner_id.eq.${user.id},loser_id.eq.${user.id}`)
-        .in('status', ['confirmed', 'disputed'])
+        .in('status', ['pending_confirmation', 'confirmed', 'disputed'])
         .order('created_at', { ascending: false })
         .limit(20),
       supabase.from('challenges')
@@ -237,6 +237,7 @@ export default function Profile() {
           <div className="divide-y divide-gray-100">
             {matches.map(m => {
               const won = m.winner_id === user.id
+              const canConfirm = m.status === 'pending_confirmation' && m.reported_by !== user.id
               const canDispute = !won && m.status === 'confirmed'
               return (
                 <div key={m.id} className="px-4 py-3 flex items-center justify-between gap-3">
@@ -244,9 +245,22 @@ export default function Profile() {
                     <p className="text-sm font-semibold text-gray-900">
                       vs {won ? m.loser?.full_name : m.winner?.full_name}
                     </p>
-                    <p className="text-xs text-gray-400">{m.score}{m.status === 'disputed' ? ' · Disputed — awaiting admin review' : ''}{m.leagues?.name ? ` · ${m.leagues.name}` : ''}</p>
+                    <p className="text-xs text-gray-400">
+                      {m.score}
+                      {m.status === 'pending_confirmation' ? ' · Awaiting your confirmation' : ''}
+                      {m.status === 'disputed' ? ' · Disputed — awaiting admin review' : ''}
+                      {m.leagues?.name ? ` · ${m.leagues.name}` : ''}
+                    </p>
                   </div>
                   <div className="flex items-center gap-2 flex-shrink-0">
+                    {canConfirm && (
+                      <button
+                        onClick={() => confirmMatch(m.id)}
+                        className="text-xs font-semibold px-3 py-1 rounded-full bg-green-600 text-white hover:bg-green-700 transition"
+                      >
+                        Confirm
+                      </button>
+                    )}
                     {canDispute && (
                       <button
                         onClick={async () => {
@@ -261,9 +275,10 @@ export default function Profile() {
                     )}
                     <span className={`text-xs font-bold px-2 py-1 rounded-full ${
                       m.status === 'disputed' ? 'bg-red-100 text-red-500' :
+                      m.status === 'pending_confirmation' ? 'bg-amber-100 text-amber-600' :
                       won ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-600'
                     }`}>
-                      {m.status === 'disputed' ? 'Disputed' : won ? 'W' : 'L'}
+                      {m.status === 'disputed' ? 'Disputed' : m.status === 'pending_confirmation' ? 'Pending' : won ? 'W' : 'L'}
                     </span>
                   </div>
                 </div>
