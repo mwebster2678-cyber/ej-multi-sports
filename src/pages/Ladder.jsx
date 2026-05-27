@@ -22,6 +22,8 @@ export default function Ladder() {
   const [scoreTarget, setScoreTarget] = useState(null) // { challenge, member }
   const [scoreLoading, setScoreLoading] = useState(false)
   const [results, setResults] = useState([])
+  const [editTarget, setEditTarget] = useState(null)
+  const [editLoading, setEditLoading] = useState(false)
   const [sortCol, setSortCol] = useState('setsW')
   const [sortDir, setSortDir] = useState('desc')
   const [joinRequest, setJoinRequest] = useState(null) // null | { status }
@@ -111,9 +113,14 @@ export default function Ladder() {
     setChallengeLoading(false)
   }
 
+  const leagueLaunching = league?.status === 'launching'
+  const leagueFinished  = league?.status === 'finished'
+  const leagueActive    = league?.status === 'in_progress'
+
   function canChallenge(member) {
     if (!myMembership) return false
     if (member.user_id === user?.id) return false
+    if (!leagueActive) return false
     return true
   }
 
@@ -146,6 +153,27 @@ export default function Ladder() {
       fetchLadder()
     }
     setScoreLoading(false)
+  }
+
+  async function editScore({ winnerId, loserId, score }) {
+    if (!editTarget) return
+    setEditLoading(true)
+    const { error: delErr } = await supabase.from('matches').delete().eq('id', editTarget.id)
+    if (delErr) { setMessage(`Error: ${delErr.message}`); setEditLoading(false); return }
+    const { error: insErr } = await supabase.from('matches').insert({
+      league_id: LEAGUE_ID,
+      challenge_id: editTarget.challenge_id,
+      winner_id: winnerId,
+      loser_id: loserId,
+      score,
+      reported_by: user.id,
+      status: 'confirmed',
+    })
+    if (insErr) { setMessage(`Error: ${insErr.message}`); setEditLoading(false); return }
+    setEditTarget(null)
+    setMessage('Score updated — league table recalculated.')
+    fetchLadder()
+    setEditLoading(false)
   }
 
   const winRate = (m) => {
@@ -215,6 +243,9 @@ export default function Ladder() {
             <div>
               <h1 className="text-xl font-bold text-white leading-tight tracking-tight">{league?.name || 'Tennis Ladder'}</h1>
               <p className="text-white/50 text-sm mt-0.5">{league?.region} · {league?.season} Season</p>
+              {league?.description && (
+                <p className="text-white/70 text-sm mt-2">{league.description}</p>
+              )}
             </div>
           </div>
 
@@ -238,8 +269,22 @@ export default function Ladder() {
           </div>
         )}
 
+        {/* Status banners */}
+        {leagueLaunching && (
+          <div className="bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 text-sm text-amber-800 flex items-center gap-2">
+            <span>🚀</span>
+            <span>This league is launching soon. You can request to join, but challenges and results will open when the season starts.</span>
+          </div>
+        )}
+        {leagueFinished && (
+          <div className="bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-600 flex items-center gap-2">
+            <span>🏁</span>
+            <span>This league has finished. Results are preserved but no new challenges or scores can be submitted.</span>
+          </div>
+        )}
+
         {/* Join banner */}
-        {user && !myMembership && (
+        {user && !myMembership && !leagueFinished && (
           joinRequest?.status === 'pending' ? (
             <div className="bg-white rounded-2xl shadow-sm p-4 flex items-center gap-3">
               <div className="w-9 h-9 rounded-full bg-amber-100 flex items-center justify-center flex-shrink-0 text-base">⏳</div>
@@ -311,6 +356,21 @@ export default function Ladder() {
           </div>
         )}
 
+        {/* Score edit (admin only) */}
+        {editTarget && (
+          <ScoreCard
+            title="Edit score"
+            subtitle={`Current score: ${editTarget.score}`}
+            playerA={editTarget.winner.full_name}
+            playerB={editTarget.loser.full_name}
+            playerAId={editTarget.winner_id}
+            playerBId={editTarget.loser_id}
+            onSubmit={editScore}
+            onCancel={() => setEditTarget(null)}
+            loading={editLoading}
+          />
+        )}
+
         {/* Score submission */}
         {scoreTarget && (
           <ScoreCard
@@ -362,7 +422,7 @@ export default function Ladder() {
                         </p>
                       </div>
                       <div className="flex-shrink-0">
-                        {cw ? (
+                        {cw && leagueActive ? (
                           <button
                             onClick={() => setScoreTarget({ challenge: cw, member })}
                             className="text-xs font-semibold px-3 py-1.5 rounded-full bg-amber-50 border border-amber-200 text-amber-700 active:bg-amber-100 transition"
@@ -441,7 +501,7 @@ export default function Ladder() {
                           <span className="w-14 flex items-center justify-center text-yellow-700">{setsRate(member)}</span>
                         </div>
                         <div className="w-28 flex-shrink-0 flex">
-                          {cw && (
+                          {cw && leagueActive && (
                             <button
                               onClick={() => setScoreTarget({ challenge: cw, member })}
                               className="flex-1 text-xs font-semibold border-l border-amber-200 text-amber-700 bg-amber-50 hover:bg-amber-100 transition flex items-center justify-center"
@@ -490,6 +550,14 @@ export default function Ladder() {
                   <span className="text-xs text-gray-300 flex-shrink-0">
                     {new Date(r.created_at).toLocaleDateString([], { day: 'numeric', month: 'short' })}
                   </span>
+                  {profile?.is_admin && (
+                    <button
+                      onClick={() => setEditTarget(r)}
+                      className="flex-shrink-0 text-xs font-semibold text-blue-600 hover:text-blue-800 px-2 py-1 rounded-lg hover:bg-blue-50 transition"
+                    >
+                      Edit
+                    </button>
+                  )}
                 </div>
               ))}
             </div>

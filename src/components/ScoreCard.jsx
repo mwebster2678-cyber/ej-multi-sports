@@ -38,7 +38,7 @@ function setWinner(a, b) {
   return null
 }
 
-export default function ScoreCard({ playerA, playerB, playerAId, playerBId, onSubmit, onCancel, loading }) {
+export default function ScoreCard({ playerA, playerB, playerAId, playerBId, onSubmit, onCancel, loading, title = 'Submit score', subtitle = 'Best of 3 — enter games won per set' }) {
   const [sets, setSets] = useState([
     { a: '', b: '' },
     { a: '', b: '' },
@@ -79,8 +79,8 @@ export default function ScoreCard({ playerA, playerB, playerAId, playerBId, onSu
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 px-4">
       <div className="bg-white rounded-2xl shadow-xl p-6 w-full max-w-sm">
-        <h2 className="text-lg font-bold text-gray-900 mb-1">Submit score</h2>
-        <p className="text-sm text-gray-400 mb-5">Best of 3 — enter games won per set</p>
+        <h2 className="text-lg font-bold text-gray-900 mb-1">{title}</h2>
+        <p className="text-sm text-gray-400 mb-5">{subtitle}</p>
 
         {/* Header */}
         <div className="grid grid-cols-5 gap-2 mb-2 text-xs font-semibold text-gray-500 text-center">
