@@ -115,14 +115,14 @@ export default function Profile() {
   return (
     <div className="max-w-2xl mx-auto px-4 py-8 space-y-6">
       {message && (
-        <div className="bg-green-50 border border-green-200 text-green-800 rounded-lg px-4 py-3 text-sm flex justify-between">
+        <div className="bg-green-50 border border-green-200 text-green-800 px-4 py-3 text-sm flex justify-between">
           <span>{message}</span>
           <button onClick={() => setMessage('')} className="text-green-600 font-bold ml-4">×</button>
         </div>
       )}
 
       {/* Profile card */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+      <div className="bg-white shadow-sm border border-gray-200 p-6">
         <div className="flex items-start gap-4">
           <div className="w-14 h-14 rounded-full flex items-center justify-center text-2xl font-bold text-white" style={{ background: '#15803D' }}>
             {profile?.full_name?.[0]?.toUpperCase() || '?'}
@@ -133,7 +133,7 @@ export default function Profile() {
                 <input
                   value={editName}
                   onChange={e => setEditName(e.target.value)}
-                  className="border border-gray-300 rounded-lg px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                  className="border border-gray-300 px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
                 />
                 <button onClick={saveName} className="text-sm text-green-700 font-semibold hover:underline">Save</button>
                 <button onClick={() => setEditMode(false)} className="text-sm text-gray-400 hover:underline">Cancel</button>
@@ -157,7 +157,7 @@ export default function Profile() {
               const total = (m.wins || 0) + (m.losses || 0)
               const winPct = total === 0 ? '—' : `${Math.round((m.wins / total) * 100)}%`
               return (
-                <div key={m.league_id} className="bg-gray-50 rounded-xl p-3">
+                <div key={m.league_id} className="bg-gray-50 p-3">
                   <p className="text-xs font-semibold text-gray-500 mb-2">{m.leagues?.name} · {m.leagues?.region}</p>
                   <div className="grid grid-cols-3 gap-3">
                     {[
@@ -165,7 +165,7 @@ export default function Profile() {
                       { label: 'Record', value: `${m.wins}W / ${m.losses}L` },
                       { label: 'Win rate', value: winPct },
                     ].map(s => (
-                      <div key={s.label} className="text-center bg-white rounded-lg py-2">
+                      <div key={s.label} className="text-center bg-white py-2">
                         <p className="text-base font-bold text-gray-900">{s.value}</p>
                         <p className="text-xs text-gray-400">{s.label}</p>
                       </div>
@@ -180,7 +180,7 @@ export default function Profile() {
 
       {/* Active challenges */}
       {challenges.length > 0 && (
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+        <div className="bg-white shadow-sm border border-gray-200 overflow-hidden">
           <div className="px-4 py-3 border-b border-gray-100">
             <h2 className="font-bold text-gray-900">Active Challenges</h2>
           </div>
@@ -217,25 +217,25 @@ export default function Profile() {
       {/* Score report modal */}
       {scoreForm && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 px-4">
-          <div className="bg-white rounded-2xl shadow-xl p-6 w-full max-w-sm">
+          <div className="bg-white shadow-xl p-6 w-full max-w-sm">
             <h2 className="text-lg font-bold text-gray-900 mb-1">Report score</h2>
             <p className="text-sm text-gray-500 mb-4">Enter the match score (you as winner)</p>
             <input
               value={score}
               onChange={e => setScore(e.target.value)}
               placeholder="e.g. 6-3, 7-5"
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 mb-4"
+              className="w-full border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 mb-4"
             />
             <div className="flex gap-3">
-              <button onClick={() => setScoreForm(null)} className="flex-1 border border-gray-300 text-gray-700 py-2 rounded-lg text-sm font-semibold hover:bg-gray-50">Cancel</button>
-              <button onClick={submitScore} style={{ background: '#15803D' }} className="flex-1 text-white py-2 rounded-lg text-sm font-semibold hover:opacity-90">Submit</button>
+              <button onClick={() => setScoreForm(null)} className="flex-1 border border-gray-300 text-gray-700 py-2 text-sm font-semibold hover:bg-gray-50">Cancel</button>
+              <button onClick={submitScore} style={{ background: '#15803D' }} className="flex-1 text-white py-2 text-sm font-semibold hover:opacity-90">Submit</button>
             </div>
           </div>
         </div>
       )}
 
       {/* Match history */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+      <div className="bg-white shadow-sm border border-gray-200 overflow-hidden">
         <div className="px-4 py-3 border-b border-gray-100">
           <h2 className="font-bold text-gray-900">Match History</h2>
         </div>

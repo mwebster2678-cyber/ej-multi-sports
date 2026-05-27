@@ -67,7 +67,7 @@ export default function Navbar() {
               <Link
                 key={to}
                 to={to}
-                className={`px-3 py-1.5 rounded-lg font-medium transition-colors ${
+                className={`px-3 py-1.5 font-medium transition-colors ${
                   match(path)
                     ? 'bg-white/15 text-white'
                     : 'text-white/60 hover:text-white hover:bg-white/10'
@@ -79,16 +79,16 @@ export default function Navbar() {
             {user ? (
               <button
                 onClick={handleSignOut}
-                className="ml-2 px-3 py-1.5 rounded-lg text-white/60 hover:text-white hover:bg-white/10 font-medium transition-colors"
+                className="ml-2 px-3 py-1.5 text-white/60 hover:text-white hover:bg-white/10 font-medium transition-colors"
               >
                 Sign out
               </button>
             ) : (
               <div className="flex items-center gap-1 ml-2">
-                <Link to="/login" className="px-3 py-1.5 rounded-lg text-white/60 hover:text-white hover:bg-white/10 font-medium transition-colors">
+                <Link to="/login" className="px-3 py-1.5 text-white/60 hover:text-white hover:bg-white/10 font-medium transition-colors">
                   Sign in
                 </Link>
-                <Link to="/register" className="px-3 py-1.5 rounded-lg bg-green-600 hover:bg-green-500 text-white font-semibold transition-colors">
+                <Link to="/register" className="px-3 py-1.5 bg-green-600 hover:bg-green-500 text-white font-semibold transition-colors">
                   Join
                 </Link>
               </div>

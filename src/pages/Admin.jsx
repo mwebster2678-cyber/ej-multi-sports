@@ -145,7 +145,7 @@ export default function Admin() {
       </div>
 
       {message && (
-        <div className="bg-green-50 border border-green-200 text-green-800 rounded-lg px-4 py-3 text-sm flex justify-between">
+        <div className="bg-green-50 border border-green-200 text-green-800 px-4 py-3 text-sm flex justify-between">
           <span>{message}</span>
           <button onClick={() => setMessage('')} className="text-green-600 font-bold ml-4">×</button>
         </div>
@@ -154,7 +154,7 @@ export default function Admin() {
       {/* ── Create League ── */}
       <section>
         <h2 className="font-bold text-gray-900 mb-3">Create League</h2>
-        <form onSubmit={createLeague} className="bg-white rounded-2xl border border-gray-200 shadow-sm p-4 space-y-3">
+        <form onSubmit={createLeague} className="bg-white border border-gray-200 shadow-sm p-4 space-y-3">
           <div className="grid grid-cols-2 gap-3">
             <div className="col-span-2">
               <label className="block text-xs font-medium text-gray-600 mb-1">League Name *</label>
@@ -163,7 +163,7 @@ export default function Admin() {
                 value={newLeague.name}
                 onChange={e => setNewLeague(p => ({ ...p, name: e.target.value }))}
                 placeholder="e.g. EJ Tennis Ladder Season 2"
-                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-600"
+                className="w-full border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-600"
               />
             </div>
             <div>
@@ -171,7 +171,7 @@ export default function Admin() {
               <select
                 value={newLeague.sport_id}
                 onChange={e => setNewLeague(p => ({ ...p, sport_id: e.target.value }))}
-                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-600"
+                className="w-full border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-600"
               >
                 <option value="">Select sport…</option>
                 {sports.map(s => (
@@ -184,7 +184,7 @@ export default function Admin() {
               <select
                 value={newLeague.type}
                 onChange={e => setNewLeague(p => ({ ...p, type: e.target.value }))}
-                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-600"
+                className="w-full border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-600"
               >
                 <option value="ladder">Ladder</option>
                 <option value="round_robin">Round Robin</option>
@@ -198,7 +198,7 @@ export default function Admin() {
                 value={newLeague.region}
                 onChange={e => setNewLeague(p => ({ ...p, region: e.target.value }))}
                 placeholder="e.g. South East England"
-                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-600"
+                className="w-full border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-600"
               />
             </div>
             <div>
@@ -208,7 +208,7 @@ export default function Admin() {
                 value={newLeague.season}
                 onChange={e => setNewLeague(p => ({ ...p, season: e.target.value }))}
                 placeholder="e.g. 2026"
-                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-600"
+                className="w-full border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-600"
               />
             </div>
             <div>
@@ -216,7 +216,7 @@ export default function Admin() {
               <select
                 value={newLeague.status}
                 onChange={e => setNewLeague(p => ({ ...p, status: e.target.value }))}
-                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-600"
+                className="w-full border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-600"
               >
                 <option value="launching">Launching</option>
                 <option value="in_progress">In Progress</option>
@@ -230,7 +230,7 @@ export default function Admin() {
                 onChange={e => setNewLeague(p => ({ ...p, description: e.target.value }))}
                 placeholder="Optional description…"
                 rows={2}
-                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-600 resize-none"
+                className="w-full border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-600 resize-none"
               />
             </div>
           </div>
@@ -238,7 +238,7 @@ export default function Admin() {
             type="submit"
             disabled={creating}
             style={{ background: '#15803D' }}
-            className="w-full text-white text-sm font-semibold py-2.5 rounded-lg hover:opacity-90 transition disabled:opacity-50"
+            className="w-full text-white text-sm font-semibold py-2.5 hover:opacity-90 transition disabled:opacity-50"
           >
             {creating ? 'Creating…' : 'Create League'}
           </button>
@@ -251,18 +251,18 @@ export default function Admin() {
         {loading ? (
           <div className="text-center text-gray-400 text-sm py-8">Loading…</div>
         ) : allLeagues.length === 0 ? (
-          <div className="bg-white rounded-2xl border border-gray-200 shadow-sm py-8 text-center text-gray-400 text-sm">
+          <div className="bg-white border border-gray-200 shadow-sm py-8 text-center text-gray-400 text-sm">
             No leagues yet.
           </div>
         ) : (
-          <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden divide-y divide-gray-100">
+          <div className="bg-white border border-gray-200 shadow-sm overflow-hidden divide-y divide-gray-100">
             {allLeagues.map(league => (
               <div key={league.id} className="px-4 py-4 space-y-2.5">
                 <div>
                   <p className="text-sm font-semibold text-gray-900">{league.sports?.icon} {league.name}</p>
                   <p className="text-xs text-gray-400 mt-0.5">{league.region} · {league.season} Season</p>
                 </div>
-                <div className="flex rounded-lg border border-gray-200 overflow-hidden text-xs font-semibold">
+                <div className="flex border border-gray-200 overflow-hidden text-xs font-semibold">
                   {STATUS_ORDER.map(s => (
                     <button
                       key={s}
@@ -300,11 +300,11 @@ export default function Admin() {
         {loading ? (
           <div className="text-center text-gray-400 text-sm py-8">Loading…</div>
         ) : joinRequests.length === 0 ? (
-          <div className="bg-white rounded-2xl border border-gray-200 shadow-sm py-8 text-center text-gray-400 text-sm">
+          <div className="bg-white border border-gray-200 shadow-sm py-8 text-center text-gray-400 text-sm">
             No pending join requests.
           </div>
         ) : (
-          <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden divide-y divide-gray-100">
+          <div className="bg-white border border-gray-200 shadow-sm overflow-hidden divide-y divide-gray-100">
             {joinRequests.map(req => (
               <div key={req.id} className="px-4 py-4 flex items-center justify-between gap-4">
                 <div>
@@ -319,13 +319,13 @@ export default function Admin() {
                   <button
                     onClick={() => approveJoin(req)}
                     style={{ background: '#15803D' }}
-                    className="text-white text-xs font-semibold px-4 py-2 rounded-lg hover:opacity-90 transition"
+                    className="text-white text-xs font-semibold px-4 py-2 hover:opacity-90 transition"
                   >
                     Approve
                   </button>
                   <button
                     onClick={() => rejectJoin(req)}
-                    className="text-xs font-semibold px-4 py-2 rounded-lg border border-red-300 text-red-600 hover:bg-red-50 transition"
+                    className="text-xs font-semibold px-4 py-2 border border-red-300 text-red-600 hover:bg-red-50 transition"
                   >
                     Decline
                   </button>
@@ -346,11 +346,11 @@ export default function Admin() {
         </h2>
 
         {loading ? null : disputes.length === 0 ? (
-          <div className="bg-white rounded-2xl border border-gray-200 shadow-sm py-8 text-center text-gray-400 text-sm">
+          <div className="bg-white border border-gray-200 shadow-sm py-8 text-center text-gray-400 text-sm">
             No disputed matches — all clear.
           </div>
         ) : (
-          <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden divide-y divide-gray-100">
+          <div className="bg-white border border-gray-200 shadow-sm overflow-hidden divide-y divide-gray-100">
             {disputes.map(match => (
               <div key={match.id} className="px-4 py-4">
                 <div className="mb-3">
@@ -367,13 +367,13 @@ export default function Admin() {
                   <button
                     onClick={() => uphold(match)}
                     style={{ background: '#15803D' }}
-                    className="flex-1 text-white py-2 rounded-lg text-sm font-semibold hover:opacity-90 transition"
+                    className="flex-1 text-white py-2 text-sm font-semibold hover:opacity-90 transition"
                   >
                     Uphold result
                   </button>
                   <button
                     onClick={() => overturn(match)}
-                    className="flex-1 border border-red-300 text-red-600 py-2 rounded-lg text-sm font-semibold hover:bg-red-50 transition"
+                    className="flex-1 border border-red-300 text-red-600 py-2 text-sm font-semibold hover:bg-red-50 transition"
                   >
                     Overturn result
                   </button>

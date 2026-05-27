@@ -69,7 +69,7 @@ export default function Messages() {
           No chats yet — challenge a player from the ladder to get started.
         </div>
       ) : (
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 divide-y divide-gray-100 overflow-hidden">
+        <div className="bg-white shadow-sm border border-gray-200 divide-y divide-gray-100 overflow-hidden">
           {chats.map(chat => {
             const other = otherPlayer(chat)
             return (

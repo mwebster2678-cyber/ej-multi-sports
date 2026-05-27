@@ -78,7 +78,7 @@ export default function ScoreCard({ playerA, playerB, playerAId, playerBId, onSu
 
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 px-4">
-      <div className="bg-white rounded-2xl shadow-xl p-6 w-full max-w-sm">
+      <div className="bg-white shadow-xl p-6 w-full max-w-sm">
         <h2 className="text-lg font-bold text-gray-900 mb-1">{title}</h2>
         <p className="text-sm text-gray-400 mb-5">{subtitle}</p>
 
@@ -104,7 +104,7 @@ export default function ScoreCard({ playerA, playerB, playerAId, playerBId, onSu
                   value={sets[i].a}
                   onChange={e => updateSet(i, 'a', e.target.value)}
                   placeholder="0"
-                  className={`col-span-2 border rounded-lg px-3 py-2 text-center text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-green-500 ${
+                  className={`col-span-2 border px-3 py-2 text-center text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-green-500 ${
                     sw === 'a' ? 'border-green-400 bg-green-50 text-green-700' : 'border-gray-300'
                   }`}
                 />
@@ -118,7 +118,7 @@ export default function ScoreCard({ playerA, playerB, playerAId, playerBId, onSu
                   value={sets[i].b}
                   onChange={e => updateSet(i, 'b', e.target.value)}
                   placeholder="0"
-                  className={`col-span-2 border rounded-lg px-3 py-2 text-center text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-green-500 ${
+                  className={`col-span-2 border px-3 py-2 text-center text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-green-500 ${
                     sw === 'b' ? 'border-green-400 bg-green-50 text-green-700' : 'border-gray-300'
                   }`}
                 />
@@ -146,7 +146,7 @@ export default function ScoreCard({ playerA, playerB, playerAId, playerBId, onSu
         })}
 
         {/* Winner */}
-        <div className={`rounded-xl px-4 py-3 text-sm text-center font-semibold mt-2 mb-5 transition-all ${
+        <div className={`px-4 py-3 text-sm text-center font-semibold mt-2 mb-5 transition-all ${
           winnerName
             ? 'bg-green-50 text-green-700 border border-green-200'
             : 'bg-gray-50 text-gray-400 border border-gray-100'
@@ -157,7 +157,7 @@ export default function ScoreCard({ playerA, playerB, playerAId, playerBId, onSu
         <div className="flex gap-3">
           <button
             onClick={onCancel}
-            className="flex-1 border border-gray-300 text-gray-700 py-2 rounded-lg text-sm font-semibold hover:bg-gray-50"
+            className="flex-1 border border-gray-300 text-gray-700 py-2 text-sm font-semibold hover:bg-gray-50"
           >
             Cancel
           </button>
@@ -165,7 +165,7 @@ export default function ScoreCard({ playerA, playerB, playerAId, playerBId, onSu
             onClick={handleSubmit}
             disabled={!canSubmit || loading}
             style={{ background: canSubmit ? '#15803D' : undefined }}
-            className="flex-1 text-white py-2 rounded-lg text-sm font-semibold hover:opacity-90 disabled:opacity-40 disabled:bg-gray-300 transition"
+            className="flex-1 text-white py-2 text-sm font-semibold hover:opacity-90 disabled:opacity-40 disabled:bg-gray-300 transition"
           >
             {loading ? 'Submitting…' : 'Submit'}
           </button>

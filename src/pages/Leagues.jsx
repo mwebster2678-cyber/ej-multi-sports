@@ -45,12 +45,12 @@ export default function Leagues() {
     return (
       <div
         onClick={() => navigate(`/leagues/${league.id}`)}
-        className={`bg-white rounded-2xl shadow-sm cursor-pointer overflow-hidden ${past ? 'opacity-75' : ''}`}
+        className={`bg-white shadow-sm cursor-pointer overflow-hidden ${past ? 'opacity-75' : ''}`}
         style={{ WebkitTapHighlightColor: 'transparent' }}
       >
         <div className="p-4 flex items-center gap-4">
           <div
-            className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl flex-shrink-0"
+            className="w-12 h-12 flex items-center justify-center text-2xl flex-shrink-0"
             style={{ background: past ? '#F8FAFC' : '#F0FDF4' }}
           >
             {league.sports?.icon || '🏆'}
@@ -105,7 +105,7 @@ export default function Leagues() {
       {/* Cards */}
       <div className="max-w-lg mx-auto px-4 -mt-12 pb-8 space-y-3">
         {loading ? (
-          <div className="bg-white rounded-2xl shadow-sm p-6 text-center text-gray-400 text-sm">
+          <div className="bg-white shadow-sm p-6 text-center text-gray-400 text-sm">
             Loading leagues…
           </div>
         ) : (
@@ -115,11 +115,11 @@ export default function Leagues() {
             ))}
 
             {!user && (
-              <div className="mt-2 bg-white rounded-2xl shadow-sm p-5 text-center">
+              <div className="mt-2 bg-white shadow-sm p-5 text-center">
                 <p className="text-sm text-gray-500 mb-3">Create an account to join a league and track your progress</p>
                 <button
                   onClick={() => navigate('/register')}
-                  className="w-full py-2.5 rounded-xl text-sm font-semibold text-white transition hover:opacity-90"
+                  className="w-full py-2.5 text-sm font-semibold text-white transition hover:opacity-90"
                   style={{ background: '#15803D' }}
                 >
                   Get started

@@ -237,7 +237,7 @@ export default function Ladder() {
             All leagues
           </Link>
           <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-3xl flex-shrink-0" style={{ background: 'rgba(255,255,255,0.1)' }}>
+            <div className="w-14 h-14 flex items-center justify-center text-3xl flex-shrink-0" style={{ background: 'rgba(255,255,255,0.1)' }}>
               {league?.sports?.icon || '🎾'}
             </div>
             <div>
@@ -251,7 +251,7 @@ export default function Ladder() {
 
           {/* My rank pill in hero */}
           {user && myMembership && (
-            <div className="mt-5 inline-flex items-center gap-2 bg-white/10 rounded-xl px-4 py-2">
+            <div className="mt-5 inline-flex items-center gap-2 bg-white/10 px-4 py-2">
               <span className="text-white/60 text-xs font-medium">Your rank</span>
               <span className="text-white font-bold text-lg">#{myMembership.rank}</span>
             </div>
@@ -263,7 +263,7 @@ export default function Ladder() {
 
         {/* Message */}
         {message && (
-          <div className="bg-green-50 border border-green-200 text-green-800 rounded-xl px-4 py-3 text-sm flex justify-between items-start">
+          <div className="bg-green-50 border border-green-200 text-green-800 px-4 py-3 text-sm flex justify-between items-start">
             <span>{message}</span>
             <button onClick={() => setMessage('')} className="text-green-500 font-bold ml-4 flex-shrink-0">×</button>
           </div>
@@ -271,13 +271,13 @@ export default function Ladder() {
 
         {/* Status banners */}
         {leagueLaunching && (
-          <div className="bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 text-sm text-amber-800 flex items-center gap-2">
+          <div className="bg-amber-50 border border-amber-200 px-4 py-3 text-sm text-amber-800 flex items-center gap-2">
             <span>🚀</span>
             <span>This league is launching soon. You can request to join, but challenges and results will open when the season starts.</span>
           </div>
         )}
         {leagueFinished && (
-          <div className="bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-600 flex items-center gap-2">
+          <div className="bg-gray-50 border border-gray-200 px-4 py-3 text-sm text-gray-600 flex items-center gap-2">
             <span>🏁</span>
             <span>This league has finished. Results are preserved but no new challenges or scores can be submitted.</span>
           </div>
@@ -286,7 +286,7 @@ export default function Ladder() {
         {/* Join banner */}
         {user && !myMembership && !leagueFinished && (
           joinRequest?.status === 'pending' ? (
-            <div className="bg-white rounded-2xl shadow-sm p-4 flex items-center gap-3">
+            <div className="bg-white shadow-sm p-4 flex items-center gap-3">
               <div className="w-9 h-9 rounded-full bg-amber-100 flex items-center justify-center flex-shrink-0 text-base">⏳</div>
               <div>
                 <p className="text-sm font-semibold text-gray-900">Request pending</p>
@@ -294,7 +294,7 @@ export default function Ladder() {
               </div>
             </div>
           ) : joinRequest?.status === 'rejected' ? (
-            <div className="bg-white rounded-2xl shadow-sm p-4 flex items-center gap-3">
+            <div className="bg-white shadow-sm p-4 flex items-center gap-3">
               <div className="w-9 h-9 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0 text-base">✗</div>
               <div>
                 <p className="text-sm font-semibold text-gray-900">Request declined</p>
@@ -305,7 +305,7 @@ export default function Ladder() {
             <button
               onClick={joinLeague}
               disabled={joining}
-              className="w-full py-3.5 rounded-2xl font-semibold text-white text-sm shadow-sm transition hover:opacity-90 disabled:opacity-50"
+              className="w-full py-3.5 font-semibold text-white text-sm shadow-sm transition hover:opacity-90 disabled:opacity-50"
               style={{ background: 'linear-gradient(135deg, #15803D, #16A34A)' }}
             >
               {joining ? 'Sending request…' : 'Request to Join'}
@@ -316,7 +316,7 @@ export default function Ladder() {
         {!user && (
           <button
             onClick={() => navigate('/register')}
-            className="w-full py-3.5 rounded-2xl font-semibold text-white text-sm shadow-sm transition hover:opacity-90"
+            className="w-full py-3.5 font-semibold text-white text-sm shadow-sm transition hover:opacity-90"
             style={{ background: 'linear-gradient(135deg, #15803D, #16A34A)' }}
           >
             Create an account to join
@@ -326,7 +326,7 @@ export default function Ladder() {
         {/* Challenge modal */}
         {challengeTarget && (
           <div className="fixed inset-0 bg-black/50 flex items-end sm:items-center justify-center z-50 px-4 pb-4 sm:pb-0">
-            <div className="bg-white rounded-2xl shadow-xl p-6 w-full max-w-sm">
+            <div className="bg-white shadow-xl p-6 w-full max-w-sm">
               <h2 className="text-lg font-bold text-gray-900 mb-0.5">Challenge {challengeTarget.profiles.full_name}</h2>
               <p className="text-sm text-gray-400 mb-5">Currently ranked #{challengeTarget.rank}</p>
               <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Proposed date (optional)</label>
@@ -334,12 +334,12 @@ export default function Ladder() {
                 type="date"
                 value={challengeDate}
                 onChange={e => setChallengeDate(e.target.value)}
-                className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 mb-5 bg-gray-50"
+                className="w-full border border-gray-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 mb-5 bg-gray-50"
               />
               <div className="flex gap-3">
                 <button
                   onClick={() => { setChallengeTarget(null); setChallengeDate('') }}
-                  className="flex-1 border border-gray-200 text-gray-600 py-2.5 rounded-xl text-sm font-semibold hover:bg-gray-50 transition"
+                  className="flex-1 border border-gray-200 text-gray-600 py-2.5 text-sm font-semibold hover:bg-gray-50 transition"
                 >
                   Cancel
                 </button>
@@ -347,7 +347,7 @@ export default function Ladder() {
                   onClick={sendChallenge}
                   disabled={challengeLoading}
                   style={{ background: '#15803D' }}
-                  className="flex-1 text-white py-2.5 rounded-xl text-sm font-semibold hover:opacity-90 disabled:opacity-50 transition"
+                  className="flex-1 text-white py-2.5 text-sm font-semibold hover:opacity-90 disabled:opacity-50 transition"
                 >
                   {challengeLoading ? 'Sending…' : 'Send challenge'}
                 </button>
@@ -385,7 +385,7 @@ export default function Ladder() {
         )}
 
         {/* Standings */}
-        <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
+        <div className="bg-white shadow-sm overflow-hidden">
           <div className="px-4 py-3.5 border-b border-gray-100 flex items-center justify-between">
             <h2 className="font-bold text-gray-900">Standings</h2>
             <span className="text-xs font-medium text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">{members.length} players</span>
@@ -529,7 +529,7 @@ export default function Ladder() {
         </div>
 
         {/* Results */}
-        <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
+        <div className="bg-white shadow-sm overflow-hidden">
           <div className="px-4 py-3.5 border-b border-gray-100">
             <h2 className="font-bold text-gray-900">Recent Results</h2>
           </div>
@@ -553,7 +553,7 @@ export default function Ladder() {
                   {profile?.is_admin && (
                     <button
                       onClick={() => setEditTarget(r)}
-                      className="flex-shrink-0 text-xs font-semibold text-blue-600 hover:text-blue-800 px-2 py-1 rounded-lg hover:bg-blue-50 transition"
+                      className="flex-shrink-0 text-xs font-semibold text-blue-600 hover:text-blue-800 px-2 py-1 hover:bg-blue-50 transition"
                     >
                       Edit
                     </button>

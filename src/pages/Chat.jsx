@@ -133,7 +133,7 @@ export default function Chat() {
                 return (
                   <div key={msg.id} className={`flex ${isMe ? 'justify-end' : 'justify-start'}`}>
                     <div className={`max-w-xs lg:max-w-sm ${isMe ? 'items-end' : 'items-start'} flex flex-col`}>
-                      <div className={`px-4 py-2 rounded-2xl text-sm ${isMe
+                      <div className={`px-4 py-2 text-sm ${isMe
                         ? 'text-white rounded-br-sm'
                         : 'bg-white text-gray-900 rounded-bl-sm border border-gray-200'
                       }`} style={isMe ? { background: '#15803D' } : {}}>

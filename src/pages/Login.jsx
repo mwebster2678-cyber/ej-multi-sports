@@ -21,7 +21,7 @@ export default function Login() {
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4">
-      <div className="bg-white rounded-2xl shadow-md p-8 w-full max-w-md">
+      <div className="bg-white shadow-md p-8 w-full max-w-md">
         <div className="text-center mb-6">
           <span className="text-4xl">🎾</span>
           <h1 className="text-2xl font-bold text-gray-900 mt-2">Sign in</h1>
@@ -29,7 +29,7 @@ export default function Login() {
         </div>
 
         {error && (
-          <div className="bg-red-50 border border-red-200 text-red-700 rounded-lg px-4 py-3 text-sm mb-4">
+          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 text-sm mb-4">
             {error}
           </div>
         )}
@@ -42,7 +42,7 @@ export default function Login() {
               required
               value={email}
               onChange={e => setEmail(e.target.value)}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+              className="w-full border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
             />
           </div>
           <div>
@@ -55,14 +55,14 @@ export default function Login() {
               required
               value={password}
               onChange={e => setPassword(e.target.value)}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+              className="w-full border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
             />
           </div>
           <button
             type="submit"
             disabled={loading}
             style={{ background: '#15803D' }}
-            className="w-full text-white py-2 rounded-lg font-semibold text-sm hover:opacity-90 transition disabled:opacity-50"
+            className="w-full text-white py-2 font-semibold text-sm hover:opacity-90 transition disabled:opacity-50"
           >
             {loading ? 'Signing in…' : 'Sign in'}
           </button>
