@@ -12,6 +12,7 @@ export default function Leagues() {
   const [pastLeagues, setPastLeagues] = useState([])
   const [memberships, setMemberships] = useState([])
   const [loading, setLoading] = useState(true)
+  const [pastOpen, setPastOpen] = useState(false)
 
   useEffect(() => { fetchLeagues() }, [user])
 
@@ -98,7 +99,6 @@ export default function Leagues() {
           <h1 className="text-3xl font-bold text-white mb-1 tracking-tight">
             Find your league
           </h1>
-          <p className="text-slate-400 text-sm">London &amp; South East England</p>
         </div>
       </div>
 
@@ -129,8 +129,17 @@ export default function Leagues() {
 
             {pastLeagues.length > 0 && (
               <>
-                <p className="text-xs font-semibold uppercase tracking-widest text-gray-400 pt-4 px-1">Past Seasons</p>
-                {pastLeagues.map(league => (
+                <button
+                  onClick={() => setPastOpen(o => !o)}
+                  className="w-full flex items-center justify-between pt-4 px-1"
+                >
+                  <p className="text-xs font-semibold uppercase tracking-widest text-gray-400">Past Seasons</p>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+                    className={`transition-transform ${pastOpen ? 'rotate-180' : ''}`}>
+                    <path d="M6 9l6 6 6-6"/>
+                  </svg>
+                </button>
+                {pastOpen && pastLeagues.map(league => (
                   <LeagueCard key={league.id} league={league} past={true} />
                 ))}
               </>

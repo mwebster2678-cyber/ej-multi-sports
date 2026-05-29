@@ -1,5 +1,6 @@
-import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import emblem from '../assets/EJMSL LOGO PNG.avif'
 
 function HomeIcon({ active }) {
   return (
@@ -36,15 +37,9 @@ function ShieldIcon({ active }) {
 }
 
 export default function Navbar() {
-  const { user, profile, signOut } = useAuth()
-  const navigate = useNavigate()
+  const { user, profile } = useAuth()
   const location = useLocation()
   const path = location.pathname
-
-  async function handleSignOut() {
-    await signOut()
-    navigate('/')
-  }
 
   const tabs = [
     { to: '/', label: 'Leagues', Icon: HomeIcon, match: p => p === '/' || p.startsWith('/leagues') },
@@ -59,8 +54,8 @@ export default function Navbar() {
       <nav className="hidden sm:block sticky top-0 z-40" style={{ background: '#0F172A' }}>
         <div className="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2 text-white font-bold text-lg tracking-tight">
-            <span className="text-xl">🎾</span>
-            <span>EJ Sports</span>
+            <img src={emblem} alt="EJMSL" className="h-8 w-auto" />
+            <span>EJ Multi Sports Leagues</span>
           </Link>
           <div className="flex items-center gap-1 text-sm">
             {tabs.map(({ to, label, match }) => (
@@ -76,14 +71,7 @@ export default function Navbar() {
                 {label}
               </Link>
             ))}
-            {user ? (
-              <button
-                onClick={handleSignOut}
-                className="ml-2 px-3 py-1.5 text-white/60 hover:text-white hover:bg-white/10 font-medium transition-colors"
-              >
-                Sign out
-              </button>
-            ) : (
+            {!user && (
               <div className="flex items-center gap-1 ml-2">
                 <Link to="/login" className="px-3 py-1.5 text-white/60 hover:text-white hover:bg-white/10 font-medium transition-colors">
                   Sign in
@@ -101,7 +89,7 @@ export default function Navbar() {
       <header className="sm:hidden sticky top-0 z-40 flex items-center justify-between px-4 h-12" style={{ background: '#0F172A' }}>
         <Link to="/" className="flex items-center gap-1.5 text-white font-bold text-base tracking-tight">
           <span>🎾</span>
-          <span>EJ Sports</span>
+          <span>EJ Multi Sports Leagues</span>
         </Link>
         {!user && (
           <Link to="/login" className="text-xs font-semibold text-white/70 hover:text-white">

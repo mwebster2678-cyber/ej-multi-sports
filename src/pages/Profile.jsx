@@ -4,7 +4,7 @@ import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
 
 export default function Profile() {
-  const { user, fetchProfile } = useAuth()
+  const { user, fetchProfile, signOut } = useAuth()
   const navigate = useNavigate()
   const [profile, setProfile] = useState(null)
   const [memberships, setMemberships] = useState([])
@@ -16,6 +16,9 @@ export default function Profile() {
   const [message, setMessage] = useState('')
   const [editMode, setEditMode] = useState(false)
   const [editName, setEditName] = useState('')
+  const [historyOpen, setHistoryOpen] = useState(false)
+  const [competitionOpen, setCompetitionOpen] = useState(false)
+  const [moreStatsOpen, setMoreStatsOpen] = useState(false)
 
   useEffect(() => {
     if (!user) { navigate('/login'); return }
@@ -148,11 +151,128 @@ export default function Profile() {
           </div>
         </div>
 
-        {/* League memberships */}
-        {memberships.length === 0 ? (
-          <p className="text-sm text-gray-400 mt-5">Not a member of any leagues yet.</p>
+      </div>
+
+      {/* Overall Record */}
+      {(() => {
+        const totalWins   = memberships.reduce((s, m) => s + (m.wins   || 0), 0)
+        const totalLosses = memberships.reduce((s, m) => s + (m.losses || 0), 0)
+        const totalPlayed = totalWins + totalLosses
+        const winPct      = totalPlayed === 0 ? '—' : `${Math.round((totalWins / totalPlayed) * 100)}%`
+
+        const totalSetsW  = memberships.reduce((s, m) => s + (m.sets_won    || 0), 0)
+        const totalSetsL  = memberships.reduce((s, m) => s + (m.sets_lost   || 0), 0)
+        const totalGamesW = memberships.reduce((s, m) => s + (m.games_won   || 0), 0)
+        const totalGamesL = memberships.reduce((s, m) => s + (m.games_lost  || 0), 0)
+        const setsPct     = totalSetsW  + totalSetsL  === 0 ? '—' : `${Math.round((totalSetsW  / (totalSetsW  + totalSetsL))  * 100)}%`
+        const gamesPct    = totalGamesW + totalGamesL === 0 ? '—' : `${Math.round((totalGamesW / (totalGamesW + totalGamesL)) * 100)}%`
+
+        const confirmedMatches = matches.filter(m => m.status === 'confirmed')
+        let streak = 0
+        let streakType = null
+        for (const m of confirmedMatches) {
+          const won = m.winner_id === user.id
+          if (streakType === null) { streakType = won ? 'W' : 'L'; streak = 1 }
+          else if ((won && streakType === 'W') || (!won && streakType === 'L')) streak++
+          else break
+        }
+        const recentTen = confirmedMatches.slice(0, 10)
+
+        return (
+          <div className="bg-white shadow-sm border border-gray-200">
+            <div className="px-4 py-3 border-b border-gray-100">
+              <h2 className="font-bold text-gray-900">Overall Record</h2>
+            </div>
+            <div className="p-4 space-y-4">
+              {/* Key stats */}
+              <div className="grid grid-cols-3 gap-3">
+                {[
+                  { label: 'Played', value: totalPlayed },
+                  { label: 'Win %',  value: winPct },
+                  { label: streakType === 'W' ? 'Win Streak' : streakType === 'L' ? 'Loss Streak' : 'Streak', value: streak === 0 ? '—' : streak },
+                ].map(s => (
+                  <div key={s.label} className="text-center bg-gray-50 py-3">
+                    <p className="text-xl font-bold text-gray-900">{s.value}</p>
+                    <p className="text-xs text-gray-400 mt-0.5">{s.label}</p>
+                  </div>
+                ))}
+              </div>
+
+              {/* Streak dots */}
+              {recentTen.length > 0 && (
+                <div>
+                  <p className="text-xs text-gray-400 mb-2">Last {recentTen.length} matches</p>
+                  <div className="flex gap-1.5">
+                    {recentTen.map((m, i) => {
+                      const won = m.winner_id === user.id
+                      return (
+                        <div
+                          key={m.id}
+                          title={won ? `W vs ${m.loser?.full_name}` : `L vs ${m.winner?.full_name}`}
+                          className={`flex-1 h-7 flex items-center justify-center text-xs font-bold rounded-sm ${
+                            won ? 'bg-green-500 text-white' : 'bg-red-400 text-white'
+                          }`}
+                        >
+                          {won ? 'W' : 'L'}
+                        </div>
+                      )
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {/* More stats toggle */}
+              <button
+                onClick={() => setMoreStatsOpen(o => !o)}
+                className="w-full flex items-center justify-between pt-1 text-sm text-gray-500 hover:text-gray-700 transition"
+              >
+                <span className="font-semibold">More stats</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+                  className={`transition-transform ${moreStatsOpen ? 'rotate-180' : ''}`}>
+                  <path d="M6 9l6 6 6-6"/>
+                </svg>
+              </button>
+
+              {moreStatsOpen && (
+                <div className="grid grid-cols-2 gap-3 pt-1">
+                  {[
+                    { label: 'Sets Won',    value: totalSetsW },
+                    { label: 'Sets Lost',   value: totalSetsL },
+                    { label: 'Sets Win %',  value: setsPct },
+                    { label: 'Games Won',   value: totalGamesW },
+                    { label: 'Games Lost',  value: totalGamesL },
+                    { label: 'Games Win %', value: gamesPct },
+                  ].map(s => (
+                    <div key={s.label} className="bg-gray-50 px-3 py-2.5 flex items-center justify-between">
+                      <span className="text-xs text-gray-500">{s.label}</span>
+                      <span className="text-sm font-bold text-gray-900">{s.value}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        )
+      })()}
+
+      {/* Competition history */}
+      <div className="bg-white shadow-sm border border-gray-200">
+        <button
+          onClick={() => setCompetitionOpen(o => !o)}
+          className="w-full px-4 py-3 flex items-center justify-between border-b border-gray-100"
+        >
+          <h2 className="font-bold text-gray-900">Competition History</h2>
+          <svg
+            width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+            className={`transition-transform ${competitionOpen ? 'rotate-180' : ''}`}
+          >
+            <path d="M6 9l6 6 6-6"/>
+          </svg>
+        </button>
+        {competitionOpen && (memberships.length === 0 ? (
+          <p className="text-sm text-gray-400 px-4 py-6">Not a member of any leagues yet.</p>
         ) : (
-          <div className="mt-5 space-y-3">
+          <div className="p-4 space-y-3">
             {memberships.map(m => {
               const total = (m.wins || 0) + (m.losses || 0)
               const winPct = total === 0 ? '—' : `${Math.round((m.wins / total) * 100)}%`
@@ -175,7 +295,7 @@ export default function Profile() {
               )
             })}
           </div>
-        )}
+        ))}
       </div>
 
       {/* Active challenges */}
@@ -235,20 +355,36 @@ export default function Profile() {
       )}
 
       {/* Match history */}
-      <div className="bg-white shadow-sm border border-gray-200 overflow-hidden">
-        <div className="px-4 py-3 border-b border-gray-100">
+      <div className="bg-white shadow-sm border border-gray-200">
+        <button
+          onClick={() => setHistoryOpen(o => !o)}
+          className="w-full px-4 py-3 flex items-center justify-between border-b border-gray-100"
+        >
           <h2 className="font-bold text-gray-900">Match History</h2>
-        </div>
-        {matches.length === 0 ? (
+          <svg
+            width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+            className={`transition-transform ${historyOpen ? 'rotate-180' : ''}`}
+          >
+            <path d="M6 9l6 6 6-6"/>
+          </svg>
+        </button>
+        {historyOpen && (matches.length === 0 ? (
           <div className="py-8 text-center text-gray-400 text-sm">No matches played yet</div>
         ) : (
-          <div className="divide-y divide-gray-100">
+          <div className="divide-y divide-gray-100 overflow-y-scroll" style={{ maxHeight: '190px' }}>
             {matches.map(m => {
               const won = m.winner_id === user.id
               const canConfirm = m.status === 'pending_confirmation' && m.reported_by !== user.id
               const canDispute = !won && m.status === 'confirmed'
               return (
-                <div key={m.id} className="px-4 py-3 flex items-center justify-between gap-3">
+                <div key={m.id} className="px-4 py-3 flex items-center gap-3">
+                  <span className={`w-9 h-9 flex-shrink-0 flex items-center justify-center rounded-full text-sm font-bold ${
+                    m.status === 'disputed' ? 'bg-red-100 text-red-500' :
+                    m.status === 'pending_confirmation' ? 'bg-amber-100 text-amber-600' :
+                    won ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-600'
+                  }`}>
+                    {m.status === 'disputed' ? '?' : m.status === 'pending_confirmation' ? '…' : won ? 'W' : 'L'}
+                  </span>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-semibold text-gray-900">
                       vs {won ? m.loser?.full_name : m.winner?.full_name}
@@ -281,20 +417,20 @@ export default function Profile() {
                         Dispute
                       </button>
                     )}
-                    <span className={`text-xs font-bold px-2 py-1 rounded-full ${
-                      m.status === 'disputed' ? 'bg-red-100 text-red-500' :
-                      m.status === 'pending_confirmation' ? 'bg-amber-100 text-amber-600' :
-                      won ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-600'
-                    }`}>
-                      {m.status === 'disputed' ? 'Disputed' : m.status === 'pending_confirmation' ? 'Pending' : won ? 'W' : 'L'}
-                    </span>
                   </div>
                 </div>
               )
             })}
           </div>
-        )}
+        ))}
       </div>
+      {/* Sign out */}
+      <button
+        onClick={async () => { await signOut(); navigate('/') }}
+        className="w-full py-4 text-base font-semibold text-white bg-red-600 hover:bg-red-700 transition"
+      >
+        Sign out
+      </button>
     </div>
   )
 }
