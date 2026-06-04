@@ -319,12 +319,12 @@ export default function Profile() {
                   <div className="flex gap-2 flex-shrink-0">
                     {!isChallenging && c.status === 'pending' && (
                       <>
-                        <button onClick={() => respondToChallenge(c.id, true)} className="text-xs px-3 py-1 rounded-full bg-green-600 text-white font-semibold hover:bg-green-700">Accept</button>
-                        <button onClick={() => respondToChallenge(c.id, false)} className="text-xs px-3 py-1 rounded-full border border-gray-300 text-gray-600 hover:bg-gray-50">Decline</button>
+                        <button onClick={() => respondToChallenge(c.id, true)} className="text-xs px-3 py-1 bg-green-600 text-white font-semibold hover:bg-green-700">Accept</button>
+                        <button onClick={() => respondToChallenge(c.id, false)} className="text-xs px-3 py-1 border border-gray-300 text-gray-600 hover:bg-gray-50">Decline</button>
                       </>
                     )}
                     {c.status === 'accepted' && (
-                      <button onClick={() => reportScore(c)} className="text-xs px-3 py-1 rounded-full bg-amber-500 text-white font-semibold hover:bg-amber-600">Report score</button>
+                      <button onClick={() => reportScore(c)} className="text-xs px-3 py-1 bg-amber-500 text-white font-semibold hover:bg-amber-600">Report score</button>
                     )}
                   </div>
                 </div>
@@ -400,7 +400,7 @@ export default function Profile() {
                     {canConfirm && (
                       <button
                         onClick={() => confirmMatch(m.id)}
-                        className="text-xs font-semibold px-3 py-1 rounded-full bg-green-600 text-white hover:bg-green-700 transition"
+                        className="text-xs font-semibold px-3 py-1 bg-green-600 text-white hover:bg-green-700 transition"
                       >
                         Confirm
                       </button>
@@ -412,7 +412,7 @@ export default function Profile() {
                           setMessage('Match disputed — an admin will review it.')
                           fetchData()
                         }}
-                        className="text-xs font-semibold px-3 py-1 rounded-full border border-red-300 text-red-600 hover:bg-red-50 transition"
+                        className="text-xs font-semibold px-3 py-1 border border-red-300 text-red-600 hover:bg-red-50 transition"
                       >
                         Dispute
                       </button>
