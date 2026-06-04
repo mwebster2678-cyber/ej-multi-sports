@@ -432,14 +432,14 @@ export default function Ladder() {
                       {cw && leagueActive ? (
                         <button
                           onClick={() => setScoreTarget({ challenge: cw, member })}
-                          className="text-xs font-semibold px-5 mr-3 border-l border-amber-200 text-amber-700 bg-amber-50 active:bg-amber-100 transition flex items-center"
+                          className="text-xs font-semibold w-24 mr-3 border-l border-amber-200 text-amber-700 bg-amber-50 active:bg-amber-100 transition flex items-center justify-center"
                         >
                           Score
                         </button>
                       ) : challengeable ? (
                         <button
                           onClick={() => setChallengeTarget(member)}
-                          className="text-xs font-semibold px-5 mr-3 text-white flex items-center transition hover:opacity-90"
+                          className="text-xs font-semibold w-24 mr-3 text-white flex items-center justify-center transition hover:opacity-90"
                           style={{ background: '#15803D' }}
                         >
                           Challenge
