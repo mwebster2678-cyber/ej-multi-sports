@@ -433,7 +433,7 @@ export default function Ladder() {
                       ) : challengeable ? (
                         <button
                           onClick={() => setChallengeTarget(member)}
-                          className="text-xs font-semibold px-4 text-white flex items-center transition hover:opacity-90"
+                          className="text-xs font-semibold px-5 mr-3 text-white flex items-center transition hover:opacity-90"
                           style={{ background: '#15803D' }}
                         >
                           Challenge
