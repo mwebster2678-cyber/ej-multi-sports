@@ -404,40 +404,41 @@ export default function Ladder() {
                   const cw = challengeWith(member)
                   const challengeable = canChallenge(member)
                   return (
-                    <div key={member.id} className={`flex items-center gap-3 px-4 py-3 ${isMe ? 'bg-green-50' : ''}`}>
-                      <div className="w-8 flex-shrink-0 text-center">
-                        {member.rank <= 3 ? (
-                          <span className="text-lg">{['🥇','🥈','🥉'][member.rank - 1]}</span>
-                        ) : (
-                          <span className="text-xs font-bold text-gray-400">#{member.rank}</span>
-                        )}
+                    <div key={member.id} className={`flex items-stretch ${isMe ? 'bg-green-50' : ''}`}>
+                      <div className="flex items-center gap-3 flex-1 min-w-0 px-4 py-3">
+                        <div className="w-8 flex-shrink-0 text-center">
+                          {member.rank <= 3 ? (
+                            <span className="text-lg">{['🥇','🥈','🥉'][member.rank - 1]}</span>
+                          ) : (
+                            <span className="text-xs font-bold text-gray-400">#{member.rank}</span>
+                          )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-semibold text-sm text-gray-900 truncate">
+                            {member.profiles?.full_name}
+                            {isMe && <span className="ml-1.5 text-xs font-normal text-green-600">you</span>}
+                          </p>
+                          <p className="text-xs text-gray-400 mt-0.5">
+                            {member.wins}W · {member.losses}L · <span className="text-yellow-700 font-medium">{member.sets_won ?? 0} sets</span>
+                          </p>
+                        </div>
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="font-semibold text-sm text-gray-900 truncate">
-                          {member.profiles?.full_name}
-                          {isMe && <span className="ml-1.5 text-xs font-normal text-green-600">you</span>}
-                        </p>
-                        <p className="text-xs text-gray-400 mt-0.5">
-                          {member.wins}W · {member.losses}L · <span className="text-yellow-700 font-medium">{member.sets_won ?? 0} sets</span>
-                        </p>
-                      </div>
-                      <div className="flex-shrink-0">
-                        {cw && leagueActive ? (
-                          <button
-                            onClick={() => setScoreTarget({ challenge: cw, member })}
-                            className="text-xs font-semibold px-3 py-1.5 bg-amber-50 border border-amber-200 text-amber-700 active:bg-amber-100 transition"
-                          >
-                            Score
-                          </button>
-                        ) : challengeable ? (
-                          <button
-                            onClick={() => setChallengeTarget(member)}
-                            className="text-xs font-semibold px-3 py-1.5 bg-green-50 border border-green-200 text-green-700 active:bg-green-100 transition"
-                          >
-                            Challenge
-                          </button>
-                        ) : null}
-                      </div>
+                      {cw && leagueActive ? (
+                        <button
+                          onClick={() => setScoreTarget({ challenge: cw, member })}
+                          className="text-xs font-semibold px-4 border-l border-amber-200 text-amber-700 bg-amber-50 active:bg-amber-100 transition flex items-center"
+                        >
+                          Score
+                        </button>
+                      ) : challengeable ? (
+                        <button
+                          onClick={() => setChallengeTarget(member)}
+                          className="text-xs font-semibold px-4 text-white flex items-center transition hover:opacity-90"
+                          style={{ background: '#15803D' }}
+                        >
+                          Challenge
+                        </button>
+                      ) : null}
                     </div>
                   )
                 })}
