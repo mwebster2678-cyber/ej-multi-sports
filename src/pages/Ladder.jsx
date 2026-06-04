@@ -214,8 +214,14 @@ export default function Ladder() {
 
   const sortedMembers = [...members].sort((a, b) => {
     const av = colValue(a, sortCol), bv = colValue(b, sortCol)
-    return sortDir === 'asc' ? av - bv : bv - av
+    if (av !== bv) return sortDir === 'asc' ? av - bv : bv - av
+    return (b.games_won ?? 0) - (a.games_won ?? 0)
   })
+
+  // Rank is always based on sets won regardless of current sort column
+  const rankMap = [...members]
+    .sort((a, b) => (b.sets_won ?? 0) - (a.sets_won ?? 0) || (b.games_won ?? 0) - (a.games_won ?? 0))
+    .reduce((map, m, i) => { map[m.user_id] = i + 1; return map }, {})
 
   const cols = [
     { col: 'wins',     label: 'W',      title: 'Matches Won',          w: 'w-10' },
@@ -253,7 +259,7 @@ export default function Ladder() {
           {user && myMembership && (
             <div className="mt-5 inline-flex items-center gap-2 bg-white/10 px-4 py-2">
               <span className="text-white/60 text-xs font-medium">Your rank</span>
-              <span className="text-white font-bold text-lg">#{myMembership.rank}</span>
+              <span className="text-white font-bold text-lg">#{rankMap[myMembership.user_id] ?? myMembership.rank}</span>
             </div>
           )}
         </div>
@@ -328,7 +334,7 @@ export default function Ladder() {
           <div className="fixed inset-0 bg-black/50 flex items-end sm:items-center justify-center z-50 px-4 pb-4 sm:pb-0">
             <div className="bg-white shadow-xl p-6 w-full max-w-sm">
               <h2 className="text-lg font-bold text-gray-900 mb-0.5">Challenge {challengeTarget.profiles.full_name}</h2>
-              <p className="text-sm text-gray-400 mb-5">Currently ranked #{challengeTarget.rank}</p>
+              <p className="text-sm text-gray-400 mb-5">Currently ranked #{rankMap[challengeTarget.user_id] ?? challengeTarget.rank}</p>
               <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Proposed date (optional)</label>
               <input
                 type="date"
@@ -407,10 +413,10 @@ export default function Ladder() {
                     <div key={member.id} className={`flex items-stretch ${isMe ? 'bg-green-50' : ''}`}>
                       <div className="flex items-center gap-3 flex-1 min-w-0 px-4 py-3">
                         <div className="w-8 flex-shrink-0 text-center">
-                          {member.rank <= 3 ? (
-                            <span className="text-lg">{['🥇','🥈','🥉'][member.rank - 1]}</span>
+                          {rankMap[member.user_id] <= 3 ? (
+                            <span className="text-lg">{['🥇','🥈','🥉'][rankMap[member.user_id] - 1]}</span>
                           ) : (
-                            <span className="text-xs font-bold text-gray-400">#{member.rank}</span>
+                            <span className="text-xs font-bold text-gray-400">#{rankMap[member.user_id]}</span>
                           )}
                         </div>
                         <div className="flex-1 min-w-0">
@@ -426,7 +432,7 @@ export default function Ladder() {
                       {cw && leagueActive ? (
                         <button
                           onClick={() => setScoreTarget({ challenge: cw, member })}
-                          className="text-xs font-semibold px-4 border-l border-amber-200 text-amber-700 bg-amber-50 active:bg-amber-100 transition flex items-center"
+                          className="text-xs font-semibold px-5 mr-3 border-l border-amber-200 text-amber-700 bg-amber-50 active:bg-amber-100 transition flex items-center"
                         >
                           Score
                         </button>
@@ -479,10 +485,10 @@ export default function Ladder() {
                         className={`flex items-stretch px-4 ${isMe ? 'bg-green-50' : 'hover:bg-slate-50'} transition-colors`}
                       >
                         <div className="w-8 flex items-center justify-center flex-shrink-0">
-                          {member.rank <= 3 ? (
-                            <span className="text-lg">{['🥇','🥈','🥉'][member.rank - 1]}</span>
+                          {rankMap[member.user_id] <= 3 ? (
+                            <span className="text-lg">{['🥇','🥈','🥉'][rankMap[member.user_id] - 1]}</span>
                           ) : (
-                            <span className="text-xs font-bold text-gray-400">#{member.rank}</span>
+                            <span className="text-xs font-bold text-gray-400">#{rankMap[member.user_id]}</span>
                           )}
                         </div>
                         <div className="flex-1 min-w-0 py-3 pl-3 flex flex-col justify-center">
